@@ -9,10 +9,99 @@
  * ---------------------------------------------------------------
  */
 
+export interface HubContactInfo {
+  contactAddress?: string;
+  email?: string;
+  mobilePhone?: string;
+}
+
+export interface HubErasmusInfo {
+  erasmusStudent?: string;
+
+  /** @format uint64 */
+  numberTimes?: string;
+
+  /** @format uint64 */
+  numberMonths?: string;
+
+  /** @format uint64 */
+  totalExams?: string;
+
+  /** @format uint64 */
+  examsPassed?: string;
+
+  /** @format uint64 */
+  totalCredits?: string;
+
+  /** @format uint64 */
+  achievedCredits?: string;
+  career?: string;
+  previousStudentFifo?: string;
+  nextStudentFifo?: string;
+}
+
 /**
  * Params defines the parameters for the module.
  */
 export type HubParams = object;
+
+export interface HubPersonalInfo {
+  /** @format uint64 */
+  gender?: string;
+  dateOfBirth?: string;
+  primaryNationality?: string;
+  countryOfBirth?: string;
+  provinceOfBirth?: string;
+  townOfBirth?: string;
+  taxCode?: string;
+}
+
+export interface HubQueryAllStoredStudentResponse {
+  storedStudent?: HubStoredStudent[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
+
+export interface HubQueryGetContactInfoResponse {
+  ContactInfo?: HubContactInfo;
+}
+
+export interface HubQueryGetErasmusInfoResponse {
+  ErasmusInfo?: HubErasmusInfo;
+}
+
+export interface HubQueryGetPersonalInfoResponse {
+  PersonalInfo?: HubPersonalInfo;
+}
+
+export interface HubQueryGetResidenceInfoResponse {
+  ResidenceInfo?: HubResidenceInfo;
+}
+
+export interface HubQueryGetStoredStudentResponse {
+  storedStudent?: HubStoredStudent;
+}
+
+export interface HubQueryGetStudentInfoResponse {
+  StudentInfo?: HubStudentInfo;
+}
+
+export interface HubQueryGetTaxesInfoResponse {
+  TaxesInfo?: HubTaxesInfo;
+}
+
+export interface HubQueryGetTranscriptOfRecordsResponse {
+  TranscriptOfRecords?: HubTranscriptOfRecords;
+}
 
 /**
  * QueryParamsResponse is response type for the Query/Params RPC method.
@@ -20,6 +109,71 @@ export type HubParams = object;
 export interface HubQueryParamsResponse {
   /** params holds all the parameters of this module. */
   params?: HubParams;
+}
+
+export interface HubResidenceInfo {
+  country?: string;
+  province?: string;
+  town?: string;
+  postCode?: string;
+  address?: string;
+  houseNumber?: string;
+  homePhone?: string;
+}
+
+export interface HubStoredStudent {
+  index?: string;
+  studentData?: HubStudentInfo;
+  transcriptData?: HubTranscriptOfRecords;
+  personalData?: HubPersonalInfo;
+  residenceData?: HubResidenceInfo;
+  contactData?: HubContactInfo;
+  taxesData?: HubTaxesInfo;
+  erasmusData?: HubErasmusInfo;
+}
+
+export interface HubStudentInfo {
+  name?: string;
+  surname?: string;
+
+  /** @format uint64 */
+  courseType?: string;
+  courseOfStudy?: string;
+
+  /** @format uint64 */
+  status?: string;
+
+  /** @format uint64 */
+  currentYearOfStudy?: string;
+  outOfCourse?: boolean;
+
+  /** @format uint64 */
+  numberOfYearsOutOfCourse?: string;
+  studentKey?: string;
+}
+
+export interface HubTaxesInfo {
+  status?: boolean;
+
+  /** @format uint64 */
+  totalAmount?: string;
+  taxesHistory?: string;
+}
+
+export interface HubTranscriptOfRecords {
+  examsData?: string;
+
+  /** @format uint64 */
+  totalExams?: string;
+
+  /** @format uint64 */
+  examsPassed?: string;
+
+  /** @format uint64 */
+  totalCredits?: string;
+
+  /** @format uint64 */
+  achievedCredits?: string;
 }
 
 export interface ProtobufAny {
@@ -31,6 +185,69 @@ export interface RpcStatus {
   code?: number;
   message?: string;
   details?: ProtobufAny[];
+}
+
+/**
+* message SomeRequest {
+         Foo some_parameter = 1;
+         PageRequest pagination = 2;
+ }
+*/
+export interface V1Beta1PageRequest {
+  /**
+   * key is a value returned in PageResponse.next_key to begin
+   * querying the next page most efficiently. Only one of offset or key
+   * should be set.
+   * @format byte
+   */
+  key?: string;
+
+  /**
+   * offset is a numeric offset that can be used when key is unavailable.
+   * It is less efficient than using key. Only one of offset or key should
+   * be set.
+   * @format uint64
+   */
+  offset?: string;
+
+  /**
+   * limit is the total number of results to be returned in the result page.
+   * If left empty it will default to a value to be set by each app.
+   * @format uint64
+   */
+  limit?: string;
+
+  /**
+   * count_total is set to true  to indicate that the result set should include
+   * a count of the total number of items available for pagination in UIs.
+   * count_total is only respected when offset is used. It is ignored when key
+   * is set.
+   */
+  count_total?: boolean;
+
+  /**
+   * reverse is set to true if results are to be returned in the descending order.
+   *
+   * Since: cosmos-sdk 0.43
+   */
+  reverse?: boolean;
+}
+
+/**
+* PageResponse is to be embedded in gRPC response messages where the
+corresponding request message has used PageRequest.
+
+ message SomeResponse {
+         repeated Bar results = 1;
+         PageResponse page = 2;
+ }
+*/
+export interface V1Beta1PageResponse {
+  /** @format byte */
+  next_key?: string;
+
+  /** @format uint64 */
+  total?: string;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -225,10 +442,42 @@ export class HttpClient<SecurityDataType = unknown> {
 }
 
 /**
- * @title hub/genesis.proto
+ * @title hub/contact_info.proto
  * @version version not set
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryContactInfo
+   * @summary Queries a ContactInfo by index.
+   * @request GET:/hub/hub/contact_info
+   */
+  queryContactInfo = (params: RequestParams = {}) =>
+    this.request<HubQueryGetContactInfoResponse, RpcStatus>({
+      path: `/hub/hub/contact_info`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryErasmusInfo
+   * @summary Queries a ErasmusInfo by index.
+   * @request GET:/hub/hub/erasmus_info
+   */
+  queryErasmusInfo = (params: RequestParams = {}) =>
+    this.request<HubQueryGetErasmusInfoResponse, RpcStatus>({
+      path: `/hub/hub/erasmus_info`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
   /**
    * No description
    *
@@ -240,6 +489,128 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryParams = (params: RequestParams = {}) =>
     this.request<HubQueryParamsResponse, RpcStatus>({
       path: `/hub/hub/params`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryPersonalInfo
+   * @summary Queries a PersonalInfo by index.
+   * @request GET:/hub/hub/personal_info
+   */
+  queryPersonalInfo = (params: RequestParams = {}) =>
+    this.request<HubQueryGetPersonalInfoResponse, RpcStatus>({
+      path: `/hub/hub/personal_info`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryResidenceInfo
+   * @summary Queries a ResidenceInfo by index.
+   * @request GET:/hub/hub/residence_info
+   */
+  queryResidenceInfo = (params: RequestParams = {}) =>
+    this.request<HubQueryGetResidenceInfoResponse, RpcStatus>({
+      path: `/hub/hub/residence_info`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryStoredStudentAll
+   * @summary Queries a list of StoredStudent items.
+   * @request GET:/hub/hub/stored_student
+   */
+  queryStoredStudentAll = (
+    query?: {
+      "pagination.key"?: string;
+      "pagination.offset"?: string;
+      "pagination.limit"?: string;
+      "pagination.count_total"?: boolean;
+      "pagination.reverse"?: boolean;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<HubQueryAllStoredStudentResponse, RpcStatus>({
+      path: `/hub/hub/stored_student`,
+      method: "GET",
+      query: query,
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryStoredStudent
+   * @summary Queries a StoredStudent by index.
+   * @request GET:/hub/hub/stored_student/{index}
+   */
+  queryStoredStudent = (index: string, params: RequestParams = {}) =>
+    this.request<HubQueryGetStoredStudentResponse, RpcStatus>({
+      path: `/hub/hub/stored_student/${index}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryStudentInfo
+   * @summary Queries a StudentInfo by index.
+   * @request GET:/hub/hub/student_info
+   */
+  queryStudentInfo = (params: RequestParams = {}) =>
+    this.request<HubQueryGetStudentInfoResponse, RpcStatus>({
+      path: `/hub/hub/student_info`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryTaxesInfo
+   * @summary Queries a TaxesInfo by index.
+   * @request GET:/hub/hub/taxes_info
+   */
+  queryTaxesInfo = (params: RequestParams = {}) =>
+    this.request<HubQueryGetTaxesInfoResponse, RpcStatus>({
+      path: `/hub/hub/taxes_info`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryTranscriptOfRecords
+   * @summary Queries a TranscriptOfRecords by index.
+   * @request GET:/hub/hub/transcript_of_records
+   */
+  queryTranscriptOfRecords = (params: RequestParams = {}) =>
+    this.request<HubQueryGetTranscriptOfRecordsResponse, RpcStatus>({
+      path: `/hub/hub/transcript_of_records`,
       method: "GET",
       format: "json",
       ...params,

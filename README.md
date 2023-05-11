@@ -1,4 +1,4 @@
-# Erasmus via blockchain 
+# Erasmus via blockchain (Hub version)
 
 In this repo we focus on the Hub.
 

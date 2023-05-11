@@ -31,3 +31,31 @@ var (
 func KeyPrefix(p string) []byte {
 	return []byte(p)
 }
+
+const (
+	StudentInfoKey = "StudentInfo-value-"
+)
+
+const (
+	TranscriptOfRecordsKey = "TranscriptOfRecords-value-"
+)
+
+const (
+	PersonalInfoKey = "PersonalInfo-value-"
+)
+
+const (
+	ResidenceInfoKey = "ResidenceInfo-value-"
+)
+
+const (
+	ContactInfoKey = "ContactInfo-value-"
+)
+
+const (
+	TaxesInfoKey = "TaxesInfo-value-"
+)
+
+const (
+	ErasmusInfoKey = "ErasmusInfo-value-"
+)
