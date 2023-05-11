@@ -3,8 +3,9 @@ package types_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
 	"hub/x/hub/types"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestGenesisState_Validate(t *testing.T) {
@@ -88,10 +89,10 @@ func TestGenesisState_Validate(t *testing.T) {
 						Index: "1",
 					},
 				},
-				ChainInfo: &types.ChainInfo{
+				ChainInfo: types.ChainInfo{
 					ChainKey:              "38",
 					ChainAdministratorKey: "81",
-					StartFlag:             false,
+					InitStatus:            false,
 				},
 				UniversitiesList: []types.Universities{
 					{

@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+
 	host "github.com/cosmos/ibc-go/v3/modules/core/24-host"
 )
 
@@ -20,8 +21,12 @@ func DefaultGenesis() *GenesisState {
 		TaxesInfo:           nil,
 		ErasmusInfo:         nil,
 		StoredStudentList:   []StoredStudent{},
-		ChainInfo:           nil,
-		UniversitiesList:    []Universities{},
+		ChainInfo: ChainInfo{
+			ChainAdministratorKey: "cosmos1w68naxagtnzfs7jrldjaalgcgfrctrk06y2rep",
+			ChainKey:              "cosmos1nqg8gn5kdvs3na2psm9fp2sad7yka8tmh90dpd",
+			InitStatus:            false,
+		},
+		UniversitiesList: []Universities{},
 		// this line is used by starport scaffolding # genesis/types/default
 		Params: DefaultParams(),
 	}

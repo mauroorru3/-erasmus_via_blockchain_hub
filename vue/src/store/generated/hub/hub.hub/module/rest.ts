@@ -46,6 +46,10 @@ export interface HubErasmusInfo {
   nextStudentFifo?: string;
 }
 
+export interface HubMsgConfigureChainResponse {
+  esponse?: string;
+}
+
 export type HubMsgSendErasmusStudentResponse = object;
 
 /**

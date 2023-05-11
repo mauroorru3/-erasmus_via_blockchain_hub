@@ -3,11 +3,12 @@ package hub_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
 	keepertest "hub/testutil/keeper"
 	"hub/testutil/nullify"
 	"hub/x/hub"
 	"hub/x/hub/types"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestGenesis(t *testing.T) {
@@ -80,10 +81,10 @@ func TestGenesis(t *testing.T) {
 				Index: "1",
 			},
 		},
-		ChainInfo: &types.ChainInfo{
+		ChainInfo: types.ChainInfo{
 			ChainKey:              "8",
 			ChainAdministratorKey: "85",
-			StartFlag:             false,
+			InitStatus:            false,
 		},
 		UniversitiesList: []types.Universities{
 			{

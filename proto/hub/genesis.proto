@@ -29,7 +29,7 @@ message GenesisState {
   TaxesInfo taxesInfo = 8;
   ErasmusInfo erasmusInfo = 9;
   repeated StoredStudent storedStudentList = 10 [(gogoproto.nullable) = false];
-  ChainInfo chainInfo = 11;
+  ChainInfo chainInfo = 11 [(gogoproto.nullable) = false];
   repeated Universities universitiesList = 12 [(gogoproto.nullable) = false];
   // this line is used by starport scaffolding # genesis/proto/state
 }

@@ -9,6 +9,7 @@ option go_package = "hub/x/hub/types";
 // Msg defines the Msg service.
 service Msg {
       rpc SendErasmusStudent(MsgSendErasmusStudent) returns (MsgSendErasmusStudentResponse);
+  rpc ConfigureChain(MsgConfigureChain) returns (MsgConfigureChainResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
 
@@ -22,4 +23,12 @@ message MsgSendErasmusStudent {
 
 message MsgSendErasmusStudentResponse {
 }
+message MsgConfigureChain {
+  string creator = 1;
+}
+
+message MsgConfigureChainResponse {
+  int32 status = 1;
+}
+
 // this line is used by starport scaffolding # proto/tx/message

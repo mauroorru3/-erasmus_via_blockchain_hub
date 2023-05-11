@@ -48418,6 +48418,11 @@ definitions:
         type: string
       nextStudentFifo:
         type: string
+  hub.hub.MsgConfigureChainResponse:
+    type: object
+    properties:
+      esponse:
+        type: string
   hub.hub.MsgSendErasmusStudentResponse:
     type: object
   hub.hub.Params:

@@ -15,6 +15,15 @@ export interface MsgSendErasmusStudent {
 
 export interface MsgSendErasmusStudentResponse {}
 
+export interface MsgConfigureChain {
+  creator: string;
+  status: number;
+}
+
+export interface MsgConfigureChainResponse {
+  esponse: string;
+}
+
 const baseMsgSendErasmusStudent: object = {
   creator: "",
   port: "",
@@ -210,12 +219,156 @@ export const MsgSendErasmusStudentResponse = {
   },
 };
 
+const baseMsgConfigureChain: object = { creator: "", status: 0 };
+
+export const MsgConfigureChain = {
+  encode(message: MsgConfigureChain, writer: Writer = Writer.create()): Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.status !== 0) {
+      writer.uint32(16).int32(message.status);
+    }
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): MsgConfigureChain {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgConfigureChain } as MsgConfigureChain;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.status = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgConfigureChain {
+    const message = { ...baseMsgConfigureChain } as MsgConfigureChain;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    if (object.status !== undefined && object.status !== null) {
+      message.status = Number(object.status);
+    } else {
+      message.status = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: MsgConfigureChain): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.status !== undefined && (obj.status = message.status);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgConfigureChain>): MsgConfigureChain {
+    const message = { ...baseMsgConfigureChain } as MsgConfigureChain;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    if (object.status !== undefined && object.status !== null) {
+      message.status = object.status;
+    } else {
+      message.status = 0;
+    }
+    return message;
+  },
+};
+
+const baseMsgConfigureChainResponse: object = { esponse: "" };
+
+export const MsgConfigureChainResponse = {
+  encode(
+    message: MsgConfigureChainResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.esponse !== "") {
+      writer.uint32(10).string(message.esponse);
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): MsgConfigureChainResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgConfigureChainResponse,
+    } as MsgConfigureChainResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.esponse = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgConfigureChainResponse {
+    const message = {
+      ...baseMsgConfigureChainResponse,
+    } as MsgConfigureChainResponse;
+    if (object.esponse !== undefined && object.esponse !== null) {
+      message.esponse = String(object.esponse);
+    } else {
+      message.esponse = "";
+    }
+    return message;
+  },
+
+  toJSON(message: MsgConfigureChainResponse): unknown {
+    const obj: any = {};
+    message.esponse !== undefined && (obj.esponse = message.esponse);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgConfigureChainResponse>
+  ): MsgConfigureChainResponse {
+    const message = {
+      ...baseMsgConfigureChainResponse,
+    } as MsgConfigureChainResponse;
+    if (object.esponse !== undefined && object.esponse !== null) {
+      message.esponse = object.esponse;
+    } else {
+      message.esponse = "";
+    }
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
-  /** this line is used by starport scaffolding # proto/tx/rpc */
   SendErasmusStudent(
     request: MsgSendErasmusStudent
   ): Promise<MsgSendErasmusStudentResponse>;
+  /** this line is used by starport scaffolding # proto/tx/rpc */
+  ConfigureChain(
+    request: MsgConfigureChain
+  ): Promise<MsgConfigureChainResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -230,6 +383,16 @@ export class MsgClientImpl implements Msg {
     const promise = this.rpc.request("hub.hub.Msg", "SendErasmusStudent", data);
     return promise.then((data) =>
       MsgSendErasmusStudentResponse.decode(new Reader(data))
+    );
+  }
+
+  ConfigureChain(
+    request: MsgConfigureChain
+  ): Promise<MsgConfigureChainResponse> {
+    const data = MsgConfigureChain.encode(request).finish();
+    const promise = this.rpc.request("hub.hub.Msg", "ConfigureChain", data);
+    return promise.then((data) =>
+      MsgConfigureChainResponse.decode(new Reader(data))
     );
   }
 }

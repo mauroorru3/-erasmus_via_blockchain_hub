@@ -6,6 +6,6 @@ option go_package = "hub/x/hub/types";
 message ChainInfo {
   string chainKey = 1; 
   string chainAdministratorKey = 2; 
-  bool startFlag = 3; 
+  bool initStatus = 3; 
   
 }
