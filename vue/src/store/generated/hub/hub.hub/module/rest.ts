@@ -9,6 +9,12 @@
  * ---------------------------------------------------------------
  */
 
+export interface HubChainInfo {
+  chainKey?: string;
+  chainAdministratorKey?: string;
+  startFlag?: boolean;
+}
+
 export interface HubContactInfo {
   contactAddress?: string;
   email?: string;
@@ -39,6 +45,8 @@ export interface HubErasmusInfo {
   previousStudentFifo?: string;
   nextStudentFifo?: string;
 }
+
+export type HubMsgSendErasmusStudentResponse = object;
 
 /**
  * Params defines the parameters for the module.
@@ -71,6 +79,25 @@ export interface HubQueryAllStoredStudentResponse {
   pagination?: V1Beta1PageResponse;
 }
 
+export interface HubQueryAllUniversitiesResponse {
+  universities?: HubUniversities[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
+
+export interface HubQueryGetChainInfoResponse {
+  ChainInfo?: HubChainInfo;
+}
+
 export interface HubQueryGetContactInfoResponse {
   ContactInfo?: HubContactInfo;
 }
@@ -101,6 +128,10 @@ export interface HubQueryGetTaxesInfoResponse {
 
 export interface HubQueryGetTranscriptOfRecordsResponse {
   TranscriptOfRecords?: HubTranscriptOfRecords;
+}
+
+export interface HubQueryGetUniversitiesResponse {
+  universities?: HubUniversities;
 }
 
 /**
@@ -174,6 +205,11 @@ export interface HubTranscriptOfRecords {
 
   /** @format uint64 */
   achievedCredits?: string;
+}
+
+export interface HubUniversities {
+  universityName?: string;
+  universitiesKey?: string;
 }
 
 export interface ProtobufAny {
@@ -442,10 +478,26 @@ export class HttpClient<SecurityDataType = unknown> {
 }
 
 /**
- * @title hub/contact_info.proto
+ * @title hub/chain_info.proto
  * @version version not set
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryChainInfo
+   * @summary Queries a ChainInfo by index.
+   * @request GET:/hub/hub/chain_info
+   */
+  queryChainInfo = (params: RequestParams = {}) =>
+    this.request<HubQueryGetChainInfoResponse, RpcStatus>({
+      path: `/hub/hub/chain_info`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
   /**
    * No description
    *
@@ -611,6 +663,48 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryTranscriptOfRecords = (params: RequestParams = {}) =>
     this.request<HubQueryGetTranscriptOfRecordsResponse, RpcStatus>({
       path: `/hub/hub/transcript_of_records`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryUniversitiesAll
+   * @summary Queries a list of Universities items.
+   * @request GET:/hub/hub/universities
+   */
+  queryUniversitiesAll = (
+    query?: {
+      "pagination.key"?: string;
+      "pagination.offset"?: string;
+      "pagination.limit"?: string;
+      "pagination.count_total"?: boolean;
+      "pagination.reverse"?: boolean;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<HubQueryAllUniversitiesResponse, RpcStatus>({
+      path: `/hub/hub/universities`,
+      method: "GET",
+      query: query,
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryUniversities
+   * @summary Queries a Universities by index.
+   * @request GET:/hub/hub/universities/{universityName}
+   */
+  queryUniversities = (universityName: string, params: RequestParams = {}) =>
+    this.request<HubQueryGetUniversitiesResponse, RpcStatus>({
+      path: `/hub/hub/universities/${universityName}`,
       method: "GET",
       format: "json",
       ...params,

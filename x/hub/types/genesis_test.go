@@ -88,6 +88,19 @@ func TestGenesisState_Validate(t *testing.T) {
 						Index: "1",
 					},
 				},
+				ChainInfo: &types.ChainInfo{
+					ChainKey:              "38",
+					ChainAdministratorKey: "81",
+					StartFlag:             false,
+				},
+				UniversitiesList: []types.Universities{
+					{
+						UniversityName: "0",
+					},
+					{
+						UniversityName: "1",
+					},
+				},
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,
@@ -101,6 +114,20 @@ func TestGenesisState_Validate(t *testing.T) {
 					},
 					{
 						Index: "0",
+					},
+				},
+			},
+			valid: false,
+		},
+		{
+			desc: "duplicated universities",
+			genState: &types.GenesisState{
+				UniversitiesList: []types.Universities{
+					{
+						UniversityName: "0",
+					},
+					{
+						UniversityName: "0",
 					},
 				},
 			},

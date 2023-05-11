@@ -59,3 +59,7 @@ const (
 const (
 	ErasmusInfoKey = "ErasmusInfo-value-"
 )
+
+const (
+	ChainInfoKey = "ChainInfo-value-"
+)

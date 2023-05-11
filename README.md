@@ -2,11 +2,11 @@
 
 In this repo we focus on the Hub.
 
-Refers to this [link](https://github.com/mauroorru3/erasmus_via_blockchain)
+Refers to this [link](https://github.com/mauroorru3/erasmus_via_blockchain).
 
 ## Installation
 
-Refers to this [link](https://github.com/mauroorru3/erasmus_via_blockchain)
+Refers to this [link](https://github.com/mauroorru3/erasmus_via_blockchain).
 
 ## Usage
 

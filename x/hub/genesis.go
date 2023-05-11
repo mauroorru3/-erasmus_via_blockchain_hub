@@ -41,6 +41,14 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	for _, elem := range genState.StoredStudentList {
 		k.SetStoredStudent(ctx, elem)
 	}
+	// Set if defined
+	if genState.ChainInfo != nil {
+		k.SetChainInfo(ctx, *genState.ChainInfo)
+	}
+	// Set all the universities
+	for _, elem := range genState.UniversitiesList {
+		k.SetUniversities(ctx, elem)
+	}
 	// this line is used by starport scaffolding # genesis/module/init
 	k.SetPort(ctx, genState.PortId)
 	// Only try to bind to port if it is not already bound, since we may already own
@@ -98,6 +106,12 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 		genesis.ErasmusInfo = &erasmusInfo
 	}
 	genesis.StoredStudentList = k.GetAllStoredStudent(ctx)
+	// Get all chainInfo
+	chainInfo, found := k.GetChainInfo(ctx)
+	if found {
+		genesis.ChainInfo = &chainInfo
+	}
+	genesis.UniversitiesList = k.GetAllUniversities(ctx)
 	// this line is used by starport scaffolding # genesis/module/export
 
 	return genesis

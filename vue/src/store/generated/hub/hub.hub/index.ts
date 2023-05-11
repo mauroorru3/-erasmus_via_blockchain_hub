@@ -1,9 +1,12 @@
 import { txClient, queryClient, MissingWalletError , registry} from './module'
 
+import { ChainInfo } from "./module/types/hub/chain_info"
 import { ContactInfo } from "./module/types/hub/contact_info"
 import { ErasmusInfo } from "./module/types/hub/erasmus_info"
 import { HubPacketData } from "./module/types/hub/packet"
 import { NoData } from "./module/types/hub/packet"
+import { ErasmusStudentPacketData } from "./module/types/hub/packet"
+import { ErasmusStudentPacketAck } from "./module/types/hub/packet"
 import { Params } from "./module/types/hub/params"
 import { PersonalInfo } from "./module/types/hub/personal_info"
 import { ResidenceInfo } from "./module/types/hub/residence_info"
@@ -11,9 +14,10 @@ import { StoredStudent } from "./module/types/hub/stored_student"
 import { StudentInfo } from "./module/types/hub/student_info"
 import { TaxesInfo } from "./module/types/hub/taxes_info"
 import { TranscriptOfRecords } from "./module/types/hub/transcript_of_records"
+import { Universities } from "./module/types/hub/universities"
 
 
-export { ContactInfo, ErasmusInfo, HubPacketData, NoData, Params, PersonalInfo, ResidenceInfo, StoredStudent, StudentInfo, TaxesInfo, TranscriptOfRecords };
+export { ChainInfo, ContactInfo, ErasmusInfo, HubPacketData, NoData, ErasmusStudentPacketData, ErasmusStudentPacketAck, Params, PersonalInfo, ResidenceInfo, StoredStudent, StudentInfo, TaxesInfo, TranscriptOfRecords, Universities };
 
 async function initTxClient(vuexGetters) {
 	return await txClient(vuexGetters['common/wallet/signer'], {
@@ -61,12 +65,18 @@ const getDefaultState = () => {
 				ErasmusInfo: {},
 				StoredStudent: {},
 				StoredStudentAll: {},
+				ChainInfo: {},
+				Universities: {},
+				UniversitiesAll: {},
 				
 				_Structure: {
+						ChainInfo: getStructure(ChainInfo.fromPartial({})),
 						ContactInfo: getStructure(ContactInfo.fromPartial({})),
 						ErasmusInfo: getStructure(ErasmusInfo.fromPartial({})),
 						HubPacketData: getStructure(HubPacketData.fromPartial({})),
 						NoData: getStructure(NoData.fromPartial({})),
+						ErasmusStudentPacketData: getStructure(ErasmusStudentPacketData.fromPartial({})),
+						ErasmusStudentPacketAck: getStructure(ErasmusStudentPacketAck.fromPartial({})),
 						Params: getStructure(Params.fromPartial({})),
 						PersonalInfo: getStructure(PersonalInfo.fromPartial({})),
 						ResidenceInfo: getStructure(ResidenceInfo.fromPartial({})),
@@ -74,6 +84,7 @@ const getDefaultState = () => {
 						StudentInfo: getStructure(StudentInfo.fromPartial({})),
 						TaxesInfo: getStructure(TaxesInfo.fromPartial({})),
 						TranscriptOfRecords: getStructure(TranscriptOfRecords.fromPartial({})),
+						Universities: getStructure(Universities.fromPartial({})),
 						
 		},
 		_Registry: registry,
@@ -161,6 +172,24 @@ export default {
 						(<any> params).query=null
 					}
 			return state.StoredStudentAll[JSON.stringify(params)] ?? {}
+		},
+				getChainInfo: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.ChainInfo[JSON.stringify(params)] ?? {}
+		},
+				getUniversities: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.Universities[JSON.stringify(params)] ?? {}
+		},
+				getUniversitiesAll: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.UniversitiesAll[JSON.stringify(params)] ?? {}
 		},
 				
 		getTypeStructure: (state) => (type) => {
@@ -421,6 +450,104 @@ export default {
 		
 		
 		
+		
+		 		
+		
+		
+		async QueryChainInfo({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const queryClient=await initQueryClient(rootGetters)
+				let value= (await queryClient.queryChainInfo()).data
+				
+					
+				commit('QUERY', { query: 'ChainInfo', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryChainInfo', payload: { options: { all }, params: {...key},query }})
+				return getters['getChainInfo']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryChainInfo API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QueryUniversities({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const queryClient=await initQueryClient(rootGetters)
+				let value= (await queryClient.queryUniversities( key.universityName)).data
+				
+					
+				commit('QUERY', { query: 'Universities', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryUniversities', payload: { options: { all }, params: {...key},query }})
+				return getters['getUniversities']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryUniversities API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QueryUniversitiesAll({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const queryClient=await initQueryClient(rootGetters)
+				let value= (await queryClient.queryUniversitiesAll(query)).data
+				
+					
+				while (all && (<any> value).pagination && (<any> value).pagination.next_key!=null) {
+					let next_values=(await queryClient.queryUniversitiesAll({...query, 'pagination.key':(<any> value).pagination.next_key})).data
+					value = mergeResults(value, next_values);
+				}
+				commit('QUERY', { query: 'UniversitiesAll', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryUniversitiesAll', payload: { options: { all }, params: {...key},query }})
+				return getters['getUniversitiesAll']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryUniversitiesAll API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		async sendMsgSendErasmusStudent({ rootGetters }, { value, fee = [], memo = '' }) {
+			try {
+				const txClient=await initTxClient(rootGetters)
+				const msg = await txClient.msgSendErasmusStudent(value)
+				const result = await txClient.signAndBroadcast([msg], {fee: { amount: fee, 
+	gas: "200000" }, memo})
+				return result
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgSendErasmusStudent:Init Could not initialize signing client. Wallet is required.')
+				}else{
+					throw new Error('TxClient:MsgSendErasmusStudent:Send Could not broadcast Tx: '+ e.message)
+				}
+			}
+		},
+		
+		async MsgSendErasmusStudent({ rootGetters }, { value }) {
+			try {
+				const txClient=await initTxClient(rootGetters)
+				const msg = await txClient.msgSendErasmusStudent(value)
+				return msg
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgSendErasmusStudent:Init Could not initialize signing client. Wallet is required.')
+				} else{
+					throw new Error('TxClient:MsgSendErasmusStudent:Create Could not create message: ' + e.message)
+				}
+			}
+		},
 		
 	}
 }

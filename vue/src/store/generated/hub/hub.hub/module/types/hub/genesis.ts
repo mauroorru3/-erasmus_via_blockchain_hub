@@ -8,6 +8,8 @@ import { ContactInfo } from "../hub/contact_info";
 import { TaxesInfo } from "../hub/taxes_info";
 import { ErasmusInfo } from "../hub/erasmus_info";
 import { StoredStudent } from "../hub/stored_student";
+import { ChainInfo } from "../hub/chain_info";
+import { Universities } from "../hub/universities";
 import { Writer, Reader } from "protobufjs/minimal";
 
 export const protobufPackage = "hub.hub";
@@ -23,8 +25,10 @@ export interface GenesisState {
   contactInfo: ContactInfo | undefined;
   taxesInfo: TaxesInfo | undefined;
   erasmusInfo: ErasmusInfo | undefined;
-  /** this line is used by starport scaffolding # genesis/proto/state */
   storedStudentList: StoredStudent[];
+  chainInfo: ChainInfo | undefined;
+  /** this line is used by starport scaffolding # genesis/proto/state */
+  universitiesList: Universities[];
 }
 
 const baseGenesisState: object = { port_id: "" };
@@ -79,6 +83,12 @@ export const GenesisState = {
     for (const v of message.storedStudentList) {
       StoredStudent.encode(v!, writer.uint32(82).fork()).ldelim();
     }
+    if (message.chainInfo !== undefined) {
+      ChainInfo.encode(message.chainInfo, writer.uint32(90).fork()).ldelim();
+    }
+    for (const v of message.universitiesList) {
+      Universities.encode(v!, writer.uint32(98).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -87,6 +97,7 @@ export const GenesisState = {
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseGenesisState } as GenesisState;
     message.storedStudentList = [];
+    message.universitiesList = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -125,6 +136,14 @@ export const GenesisState = {
             StoredStudent.decode(reader, reader.uint32())
           );
           break;
+        case 11:
+          message.chainInfo = ChainInfo.decode(reader, reader.uint32());
+          break;
+        case 12:
+          message.universitiesList.push(
+            Universities.decode(reader, reader.uint32())
+          );
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -136,6 +155,7 @@ export const GenesisState = {
   fromJSON(object: any): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
     message.storedStudentList = [];
+    message.universitiesList = [];
     if (object.params !== undefined && object.params !== null) {
       message.params = Params.fromJSON(object.params);
     } else {
@@ -194,6 +214,19 @@ export const GenesisState = {
         message.storedStudentList.push(StoredStudent.fromJSON(e));
       }
     }
+    if (object.chainInfo !== undefined && object.chainInfo !== null) {
+      message.chainInfo = ChainInfo.fromJSON(object.chainInfo);
+    } else {
+      message.chainInfo = undefined;
+    }
+    if (
+      object.universitiesList !== undefined &&
+      object.universitiesList !== null
+    ) {
+      for (const e of object.universitiesList) {
+        message.universitiesList.push(Universities.fromJSON(e));
+      }
+    }
     return message;
   },
 
@@ -237,12 +270,24 @@ export const GenesisState = {
     } else {
       obj.storedStudentList = [];
     }
+    message.chainInfo !== undefined &&
+      (obj.chainInfo = message.chainInfo
+        ? ChainInfo.toJSON(message.chainInfo)
+        : undefined);
+    if (message.universitiesList) {
+      obj.universitiesList = message.universitiesList.map((e) =>
+        e ? Universities.toJSON(e) : undefined
+      );
+    } else {
+      obj.universitiesList = [];
+    }
     return obj;
   },
 
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
     message.storedStudentList = [];
+    message.universitiesList = [];
     if (object.params !== undefined && object.params !== null) {
       message.params = Params.fromPartial(object.params);
     } else {
@@ -299,6 +344,19 @@ export const GenesisState = {
     ) {
       for (const e of object.storedStudentList) {
         message.storedStudentList.push(StoredStudent.fromPartial(e));
+      }
+    }
+    if (object.chainInfo !== undefined && object.chainInfo !== null) {
+      message.chainInfo = ChainInfo.fromPartial(object.chainInfo);
+    } else {
+      message.chainInfo = undefined;
+    }
+    if (
+      object.universitiesList !== undefined &&
+      object.universitiesList !== null
+    ) {
+      for (const e of object.universitiesList) {
+        message.universitiesList.push(Universities.fromPartial(e));
       }
     }
     return message;

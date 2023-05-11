@@ -11,6 +11,8 @@ import "hub/contact_info.proto";
 import "hub/taxes_info.proto";
 import "hub/erasmus_info.proto";
 import "hub/stored_student.proto";
+import "hub/chain_info.proto";
+import "hub/universities.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
 option go_package = "hub/x/hub/types";
@@ -27,5 +29,7 @@ message GenesisState {
   TaxesInfo taxesInfo = 8;
   ErasmusInfo erasmusInfo = 9;
   repeated StoredStudent storedStudentList = 10 [(gogoproto.nullable) = false];
+  ChainInfo chainInfo = 11;
+  repeated Universities universitiesList = 12 [(gogoproto.nullable) = false];
   // this line is used by starport scaffolding # genesis/proto/state
 }

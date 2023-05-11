@@ -80,6 +80,19 @@ func TestGenesis(t *testing.T) {
 				Index: "1",
 			},
 		},
+		ChainInfo: &types.ChainInfo{
+			ChainKey:              "8",
+			ChainAdministratorKey: "85",
+			StartFlag:             false,
+		},
+		UniversitiesList: []types.Universities{
+			{
+				UniversityName: "0",
+			},
+			{
+				UniversityName: "1",
+			},
+		},
 		// this line is used by starport scaffolding # genesis/test/state
 	}
 
@@ -101,5 +114,7 @@ func TestGenesis(t *testing.T) {
 	require.Equal(t, genesisState.TaxesInfo, got.TaxesInfo)
 	require.Equal(t, genesisState.ErasmusInfo, got.ErasmusInfo)
 	require.ElementsMatch(t, genesisState.StoredStudentList, got.StoredStudentList)
+	require.Equal(t, genesisState.ChainInfo, got.ChainInfo)
+	require.ElementsMatch(t, genesisState.UniversitiesList, got.UniversitiesList)
 	// this line is used by starport scaffolding # genesis/test/assert
 }
